@@ -186,15 +186,16 @@ if __name__ == '__main__':
                         toBeParsed = XMLParser(None,loadedXml.find('merchants'))  
                         parsedXmlDataFrame = toBeParsed.parseToDataFrame()
                         if finalDataFrame:
-                            hugeDataFrame = pd.concat([hugeDataFrame.copy(),parsedXmlDataFrame])
+                            finalDataFrame = pd.concat([finalDataFrame.copy(),parsedXmlDataFrame])
                         else:
-                            hugeDataFrame = parsedXmlDataFrame.copy()
+                            finalDataFrame = parsedXmlDataFrame.copy()
                     
                     else:
                         pass              
             else:
                 pass
+            
     try:
-        hugeDataFrame.to_csv('data/out/tables/parsedBatch.csv',index=None)
+        finalDataFrame.to_csv('data/out/tables/parsedBatch.csv',index=None)
     except AttributeError:
         pass
