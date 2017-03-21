@@ -117,7 +117,7 @@ class Node:
 
 class XMLParser:
     """
-    XML Parser for Liftago. Takes either `path_to_xml` string (mandatory, set to None if unusued) or `extTree` ElementTree
+    XML Parser for Liftago. Takes either `path_to_xml` string (mandatory, set to None if unused) or `extTree` ElementTree
     object. Method `parseToDataFrame` returns flattened xml as pandas.DataFrame, which can be then exported to csv via *.to_csv method
     """
     def __init__(self,path_to_xml,extTree=None):
