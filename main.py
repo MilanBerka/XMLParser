@@ -143,7 +143,7 @@ class XMLParser:
 """    GOOGLE API CONNECTION    """
 """ =========================== """
 
-if __name__ = '__main__': 
+if __name__ == '__main__': 
     cfg = docker.Config()
     parameters = cfg.get_parameters()
     folderNames = parameters.get('folderNames')
@@ -194,3 +194,7 @@ if __name__ = '__main__':
                         pass              
             else:
                 pass
+    try:
+        hugeDataFrame.to_csv('data/out/tables/parsedBatch.csv',index=None)
+    except AttributeError:
+        pass
