@@ -211,31 +211,31 @@ if __name__ == '__main__':
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('drive', 'v3', http=http)
-
-    results = service.files().list(q="mimeType = 'application/vnd.google-apps.folder' \
-    and name = 'CSOB AM 2017' and trashed=false",
-        pageSize=50,fields="nextPageToken, files(id, name)").execute()
-    items = results.get('files', [])
-    if not items:
-        print('No files found.')
-    else:
-        finalDataFrame = None
-        desiredFileId = items[0]['id']
-        driveZipFiles = service.files().list(q="'{}' in parents and trashed=false and (mimeType contains 'zip') ".format(desiredFileId),
-        pageSize=1000,fields="nextPageToken, files(id, name)").execute()
-        zipitems = driveZipFiles.get('files', [])
-        if not zipitems:
+    for folderName in FOLDER_NAMES:
+        results = service.files().list(q="mimeType = 'application/vnd.google-apps.folder' \
+        and name = '{}' and trashed=false".format(folderName),
+            pageSize=50,fields="nextPageToken, files(id, name)").execute()
+        items = results.get('files', [])
+        if not items:
             print('No files found.')
-        print('Files:')
-        for item in zipitems:
-            pass
-            request = service.files().get_media(fileId=item['id'])
-            fh = io.BytesIO()
-            downloader = MediaIoBaseDownload(fh, request)
-            done = False
-            while done is False:
-                status, done = downloader.next_chunk()
-            readZipfile = zipfile.ZipFile(fh, "r")
-            extract_xml2csv(readZipfile,finalDataFrame)
+        else:
+            finalDataFrame = None
+            desiredFileId = items[0]['id']
+            driveZipFiles = service.files().list(q="'{}' in parents and trashed=false and (mimeType contains 'zip') ".format(desiredFileId),
+            pageSize=1000,fields="nextPageToken, files(id, name)").execute()
+            zipitems = driveZipFiles.get('files', [])
+            if not zipitems:
+                print('No files found.')
+            print('Files:')
+            for item in zipitems:
+                pass
+                request = service.files().get_media(fileId=item['id'])
+                fh = io.BytesIO()
+                downloader = MediaIoBaseDownload(fh, request)
+                done = False
+                while done is False:
+                    status, done = downloader.next_chunk()
+                readZipfile = zipfile.ZipFile(fh, "r")
+                extract_xml2csv(readZipfile,finalDataFrame)
         
         finalDataFrame.to_csv('/data/out/tables/parsedBatch.csv',index=None) 
